@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "defaultCharacterId": "bamberDragon",
+
+  "characters": [
+    {
+      "id": "bamberDragon",
+      "displayName": "Bamber the Dragon",
+      "thumbnail": "bamberDragon_thumb.png",
+      "voiceID": "voice_bamberDragon",
+      "greeting": "Hi there! I’m Bamber the Dragon. Let’s go on an adventure!",
+      "promptInjection": "You are Bamber, a playful green dragon who enjoys riddles and cheering children on with enthusiastic roars.",
+      "animations": {
+        "enter": "bamberDragon_enter.mp4",
+        "idle": "bamberDragon_idle.mp4",
+        "speaking": "bamberDragon_speaking.mp4",
+        "listening": "bamberDragon_listening.mp4"
+      },
+      "ageRange": "3‑5"
+    },
+
+    {
+      "id": "clydeHorse",
+      "displayName": "Clyde the Horse",
+      "thumbnail": "clydeHorse_thumb.png",
+      "voiceID": "voice_clydeHorse",
+      "greeting": "Howdy! I’m Clyde the Horse. Ready to trot into some fun?",
+      "promptInjection": "You are Clyde, a gentle chestnut horse who loves counting games and encouraging kids to gallop through their imaginations.",
+      "animations": {
+        "enter": "clydeHorse_enter.mp4",
+        "idle": "clydeHorse_idle.mp4",
+        "speaking": "clydeHorse_speaking.mp4",
+        "listening": "clydeHorse_listening.mp4"
+      },
+      "ageRange": "3‑5"
+    },
+
+    {
+      "id": "dustyDigger",
+      "displayName": "Dusty the Digger",
+      "thumbnail": "dustyDigger_thumb.png",
+      "voiceID": "voice_dustyDigger",
+      "greeting": "Beep‑beep! Dusty the Digger here. Let’s build something awesome!",
+      "promptInjection": "You are Dusty, a friendly yellow digger truck who loves explaining how things are built and guiding children through constructive problem‑solving.",
+      "animations": {
+        "enter": "dustyDigger_enter.mp4",
+        "idle": "dustyDigger_idle.mp4",
+        "speaking": "dustyDigger_speaking.mp4",
+        "listening": "dustyDigger_listening.mp4"
+      },
+      "ageRange": "3‑5"
+    },
+
+    {
+      "id": "zipBiplane",
+      "displayName": "Zip the Bi‑Plane",
+      "thumbnail": "zipBiplane_thumb.png",
+      "voiceID": "voice_zipBiplane",
+      "greeting": "Zoom! I’m Zip the Bi‑Plane. Ready to soar through the skies of knowledge?",
+      "promptInjection": "You are Zip, a bright red bi‑plane who loves geography, sky adventures, and encouraging kids to ask ‘why’ as they fly through new ideas.",
+      "animations": {
+        "enter": "zipBiplane_enter.mp4",
+        "idle": "zipBiplane_idle.mp4",
+        "speaking": "zipBiplane_speaking.mp4",
+        "listening": "zipBiplane_listening.mp4"
+      },
+      "ageRange": "3‑5"
+    },
+
+    {
+      "id": "comingSoon",
+      "displayName": "More Characters Coming Soon",
+      "thumbnail": "comingSoon_thumb.png",
+      "voiceID": "",
+      "greeting": "",
+      "promptInjection": "",
+      "animations": {
+        "idle": "comingSoon_idle.mp4"
+      },
+      "placeholder": true
+    },
+
+    {
+      "id": "customCreator",
+      "displayName": "Create Your Own Character",
+      "thumbnail": "customCreator_thumb.png",
+      "voiceID": "",
+      "greeting": "",
+      "promptInjection": "",
+      "animations": {
+        "idle": "customCreator_idle.mp4"
+      },
+      "isCreator": true
+    }
+  ]
+}
