@@ -7,8 +7,8 @@ protocol SpeechToTextProvider {
 }
 
 protocol TextToSpeechProvider {
-    func fetchAudio(for text: String) async throws -> Data
-    func fetchStreamingAudio(for text: String) async throws -> Data
+    func fetchAudio(for text: String, voiceID: String) async throws -> Data
+    func fetchStreamingAudio(for text: String, voiceID: String) async throws -> Data
 }
 
 protocol LLMProvider {

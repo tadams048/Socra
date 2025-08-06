@@ -73,17 +73,18 @@ final class TTSService: TextToSpeechProvider {
     // =========================================================
     // MARK: Non‑streaming
     // =========================================================
-    func fetchAudio(for text: String) async throws -> Data {
-        if let cached = cache.object(forKey: text as NSString) { return cached.data }
+    func fetchAudio(for text: String, voiceID: String) async throws -> Data {
+        let cacheKey = "\(voiceID)|\(text)" as NSString
+        if let cached = cache.object(forKey: cacheKey) { return cached.data }
 
         do {
-            let data = try await elevenLabsRequest(text: text, stream: false)
-            cache.setObject(AudioDataWrapper(data: data), forKey: text as NSString)
+            let data = try await elevenLabsRequest(text: text, voiceID: voiceID, stream: false)
+            cache.setObject(AudioDataWrapper(data: data), forKey: cacheKey)
             return data
         } catch TTSError.unauthorized, TTSError.rateLimited {
             logger.warning("ElevenLabs quota/401 – falling back to OpenAI (non‑stream)")
             let data = try await openAITTS(text: text, stream: false)
-            cache.setObject(AudioDataWrapper(data: data), forKey: text as NSString)
+            cache.setObject(AudioDataWrapper(data: data), forKey: cacheKey)
             return data
         }
     }
@@ -91,9 +92,9 @@ final class TTSService: TextToSpeechProvider {
     // =========================================================
     // MARK: Streaming – returns full Data *and* feeds chunks
     // =========================================================
-    func fetchStreamingAudio(for text: String) async throws -> Data {
+    func fetchStreamingAudio(for text: String, voiceID: String) async throws -> Data {
         do {
-            return try await elevenLabsRequest(text: text, stream: true)
+            return try await elevenLabsRequest(text: text, voiceID: voiceID, stream: true)
         } catch TTSError.unauthorized, TTSError.rateLimited {
             logger.warning("ElevenLabs quota/401 – falling back to OpenAI (stream)")
             return try await openAITTS(text: text, stream: true, speed: 1.1)
@@ -103,9 +104,9 @@ final class TTSService: TextToSpeechProvider {
     // =========================================================
     // MARK: ElevenLabs helpers
     // =========================================================
-    private func elevenLabsRequest(text: String, stream: Bool) async throws -> Data {
+    private func elevenLabsRequest(text: String, voiceID: String, stream: Bool) async throws -> Data {
         let urlString =
-          "https://api.elevenlabs.io/v1/text-to-speech/\(Config.elevenLabsVoiceID)"
+          "https://api.elevenlabs.io/v1/text-to-speech/\(voiceID)"
           + (stream ? "/stream" : "")
         guard let url = URL(string: urlString) else { fatalError("Bad ElevenLabs URL") }
 

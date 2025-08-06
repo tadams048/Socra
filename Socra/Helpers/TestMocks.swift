@@ -23,11 +23,11 @@ class MockSpeechToTextProvider: SpeechToTextProvider {
 
 // Mock for TextToSpeechProvider
 class MockTextToSpeechProvider: TextToSpeechProvider {
-    func fetchAudio(for text: String) async throws -> Data {
+    func fetchAudio(for text: String, voiceID: String) async throws -> Data {
         return Data()  // Empty data for test
     }
-    
-    func fetchStreamingAudio(for text: String) async throws -> Data {
+
+    func fetchStreamingAudio(for text: String, voiceID: String) async throws -> Data {
         return Data()  // Empty data for test
     }
 }
