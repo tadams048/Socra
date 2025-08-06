@@ -62,3 +62,4 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 */xcshareddata/xcschemes/* # so it stays out
 */xcshareddata/xcschemes/*
+Socra.xcodeproj/xcshareddata/xcschemes/*.xcscheme
