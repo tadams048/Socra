@@ -7,8 +7,9 @@
       "id": "bamberDragon",
       "displayName": "Bamber the Dragon",
       "thumbnail": "bamberDragon_thumb.png",
-      "voiceID": "voice_bamberDragon",
-      "greeting": "Hi there! I’m Bamber the Dragon. Let’s go on an adventure!",
+      "greetingAudio": "bamberDragon_greeting.mp3",
+      "voiceID": "zGjIP4SZlMnY9m93k97r" ,
+      "greeting": "Hey there I’m Bamber! Hold the Gem to talk to me!",
       "promptInjection": "You are Bamber, a playful green dragon who enjoys riddles and cheering children on with enthusiastic roars.",
       "animations": {
         "enter": "bamberDragon_enter.mp4",
@@ -23,8 +24,9 @@
       "id": "clydeHorse",
       "displayName": "Clyde the Horse",
       "thumbnail": "clydeHorse_thumb.png",
-      "voiceID": "voice_clydeHorse",
+      "voiceID": "UgBBYS2sOqTuMpoF3BR0",
       "greeting": "Howdy! I’m Clyde the Horse. Ready to trot into some fun?",
+      "greetingAudio": "clydeHorse_greeting.mp3",
       "promptInjection": "You are Clyde, a gentle chestnut horse who loves counting games and encouraging kids to gallop through their imaginations.",
       "animations": {
         "enter": "clydeHorse_enter.mp4",

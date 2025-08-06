@@ -2,8 +2,8 @@
 //  ContentView.swift
 //  Socra
 //
-//  Portrait  :  [Image] over [Dragon]
-//  Landscape :  [Dragon] | [Image]
+//  Portrait  :  [Image] over [Avatar]
+//  Landscape :  [Avatar] | [Image]
 //
 
 import SwiftUI
@@ -21,12 +21,10 @@ struct ContentView: View {
 
     // ── Injected / State ──────────────────────────────────────────
     private let speechRecognizer: SpeechToTextProvider
-    @StateObject private var conversationManager: ConversationManager
 
-    // Phase‑2 additions ↓
+    @StateObject private var conversationManager: ConversationManager
     @EnvironmentObject private var characterManager: CharacterManager
     @State private var showingCharacterSheet = false
-    // Phase‑2 additions ↑
 
     @State private var gemState: GemState = .idle
     @State private var micPermissionGranted = false
@@ -35,24 +33,20 @@ struct ContentView: View {
 
     @StateObject private var storeManager = StoreManager()
 
-    /// Referenced by ConversationManager on first greet
-    static let greetingText = """
-    Hello I’m Rex! Do you want to hear a story? \
-    Tap and hold the diamond to talk to me!
-    """
-
     // ── Init ───────────────────────────────────────────────────────
     init() {
         let recognizer = SpeechRecognizer()
         self.speechRecognizer = recognizer
-        _conversationManager  = StateObject(
-            wrappedValue: ConversationManager(speechRecognizer: recognizer)
+        _conversationManager = StateObject(
+            wrappedValue: ConversationManager(
+                speechRecognizer: recognizer
+            )
         )
     }
 
     // ── Body ───────────────────────────────────────────────────────
     var body: some View {
-        NavigationStack {               // ← wrapped in NavigationStack to host toolbar
+        NavigationStack {
             GeometryReader { geo in
                 let isPortrait = geo.size.height >= geo.size.width
                 let square: CGFloat = isPortrait
@@ -62,16 +56,16 @@ struct ContentView: View {
                 ZStack {
                     Color(.systemBackground).ignoresSafeArea()
 
-                    // — Adaptive layout (IDs keep state on rotate) —
+                    // — Adaptive layout —
                     Group {
                         if isPortrait {
                             VStack(spacing: 0) {
                                 illustrationSquare(of: square).id("illustration")
-                                dragonSquare(of: square).id("dragon")
+                                avatarSquare(of: square).id("avatar")
                             }
                         } else {
                             HStack(spacing: 0) {
-                                dragonSquare(of: square).id("dragon")
+                                avatarSquare(of: square).id("avatar")
                                 illustrationSquare(of: square).id("illustration")
                             }
                         }
@@ -97,19 +91,19 @@ struct ContentView: View {
             .onChange(of: showFreeTrial) { _, presented in
                 if !presented { configureSession() }
             }
-            .fullScreenCover(isPresented: $showFreeTrial) { FreeTrialView() }
+            .fullScreenCover(isPresented: $showFreeTrial) {
+                FreeTrialView()
+                    .environmentObject(characterManager)   // propagates explicitly
+            }
             .task {
                 await storeManager.load()
                 if storeManager.isSubscribed { showFreeTrial = false }
             }
-            // ── Phase‑2 toolbar + sheet ──────────────────────────
+            // — Character picker toolbar & sheet —
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        showingCharacterSheet = true
-                    } label: {
-                        Image(systemName: "person.crop.square")
-                            .imageScale(.large)
+                    Button { showingCharacterSheet = true } label: {
+                        Image(systemName: "person.crop.square").imageScale(.large)
                     }
                     .accessibilityLabel("Choose a character")
                 }
@@ -118,9 +112,8 @@ struct ContentView: View {
                 CharacterSelectionView()
                     .environmentObject(characterManager)
             }
-            // ─────────────────────────────────────────────────────
         }
-        .navigationBarTitleDisplayMode(.inline)   // keeps nav bar compact
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     // ── Squares ───────────────────────────────────────────────────
@@ -131,10 +124,10 @@ struct ContentView: View {
     }
 
     @ViewBuilder
-    private func dragonSquare(of size: CGFloat) -> some View {
-        DragonView(
+    private func avatarSquare(of size: CGFloat) -> some View {
+        AvatarView(
             isSpeaking: conversationManager.isSpeaking,
-            shouldPlay: !showFreeTrial          // ⬅ gate playback
+            shouldPlay: !showFreeTrial
         )
         .frame(width: size, height: size)
         .modifier(CardStyle())
@@ -195,7 +188,7 @@ struct ContentView: View {
             DispatchQueue.main.async {
                 micPermissionGranted = granted
                 if granted {
-                    conversationManager.speak(ContentView.greetingText)
+                    conversationManager.playGreeting()
                 } else {
                     errorMessage = "Microphone access is required. Enable it in Settings."
                 }

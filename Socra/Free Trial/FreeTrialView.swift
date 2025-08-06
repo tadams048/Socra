@@ -18,6 +18,7 @@ private let log = Logger(
 struct FreeTrialView: View {
     @Environment(\.dismiss)               private var dismiss
     @Environment(\.horizontalSizeClass)   private var hSize
+    @EnvironmentObject                    private var characterManager: CharacterManager   // NEW
 
     private static let pool = [
         "Why does electricity zap?","Why do roads get broken?",
@@ -39,8 +40,8 @@ struct FreeTrialView: View {
             // ── Shimmering background (full‑screen, muted loop) ────────────
             ShimmerBackground()
                 .opacity(0.65)
-                .allowsHitTesting(false)          // never block taps
-                .overlay(                         // subtle gradient for contrast
+                .allowsHitTesting(false)
+                .overlay(
                     LinearGradient(
                         colors: [Color.white.opacity(0.6), Color.white.opacity(0.1)],
                         startPoint: .top,
@@ -53,6 +54,7 @@ struct FreeTrialView: View {
 
                 // ── Hero video card ───────────────────────────────────────
                 HeroVideo(boardTrigger: $boardTrigger)
+                    .environmentObject(characterManager)               // NEW
                     .padding(.top, 60)
 
                 Spacer(minLength: 24)
@@ -119,7 +121,7 @@ struct FreeTrialView: View {
             Image(systemName: "xmark")
                 .font(.system(size: 20, weight: .bold))
                 .foregroundColor(Color(hex: "#7B3BFF"))
-                .frame(width: 44, height: 44)                 // 44‑pt tap target
+                .frame(width: 44, height: 44)
                 .background(.ultraThinMaterial, in: Circle())
                 .overlay(
                     Circle().stroke(
@@ -137,7 +139,7 @@ struct FreeTrialView: View {
         }
         .buttonStyle(.plain)
         .padding(.trailing, 20)
-        .padding(.top, 44)                                    // below status bar
+        .padding(.top, 44)
         .accessibilityLabel("Dismiss")
     }
 
@@ -182,6 +184,8 @@ private struct ShimmerBackground: View {
 // MARK: – Hero video card (4:3, always muted)
 // ─────────────────────────────────────────────────────────────
 private struct HeroVideo: View {
+    @EnvironmentObject private var characterManager: CharacterManager      // NEW
+
     @State   private var player: AVPlayer?
     @Binding var boardTrigger: Int
 
@@ -201,13 +205,20 @@ private struct HeroVideo: View {
         .frame(height: UIScreen.main.bounds.height * 0.5)
     }
 
+    // NEW: resolves URLs via Character manifest, falls back to legacy names
     private func setupPlayer() {
         guard player == nil else { return }
+        let char = characterManager.current
 
-        guard
-            let introURL = Bundle.main.url(forResource: "Enter_Right",  withExtension: "mp4"),
-            let loopURL  = Bundle.main.url(forResource: "Excited_Fire", withExtension: "mp4")
-        else { log.error("Video assets missing"); return }
+        let enterURL = char.url(for: .enter)
+            ?? Bundle.main.url(forResource: "Enter_Right", withExtension: "mp4")
+        let loopURL  = char.url(for: .speaking)   // energetic loop
+            ?? Bundle.main.url(forResource: "Excited_Fire", withExtension: "mp4")
+
+        guard let introURL = enterURL, let loopURL else {
+            log.error("HeroVideo assets missing")
+            return
+        }
 
         let intro = AVPlayerItem(url: introURL)
         let loop  = AVPlayerItem(url: loopURL)
@@ -240,6 +251,7 @@ private struct HeroVideo: View {
 
 // ─────────────────────────────────────────────────────────────
 // MARK: – Benefit grid
+// (unchanged)
 // ─────────────────────────────────────────────────────────────
 private struct BenefitGrid: View {
     @Environment(\.horizontalSizeClass) private var hSize
@@ -276,7 +288,7 @@ private struct BenefitGrid: View {
 }
 
 // ─────────────────────────────────────────────────────────────
-// MARK: – Question board
+// MARK: – Question board (unchanged)
 // ─────────────────────────────────────────────────────────────
 private struct QuestionBoard: View {
     let texts: [String]
@@ -308,7 +320,7 @@ private struct QuestionBoard: View {
 }
 
 // ─────────────────────────────────────────────────────────────
-// MARK: – CTA button
+// MARK: – CTA button (unchanged)
 // ─────────────────────────────────────────────────────────────
 private struct CTAButton: View {
     @State private var pressed = false
@@ -341,7 +353,7 @@ private struct CTAButton: View {
 }
 
 // ─────────────────────────────────────────────────────────────
-// MARK: – PlayerContainer & CardShadow
+// MARK: – PlayerContainer & CardShadow (unchanged)
 // ─────────────────────────────────────────────────────────────
 struct PlayerContainer: UIViewRepresentable {
     let player: AVPlayer?
